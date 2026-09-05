@@ -1,7 +1,7 @@
 import java.util.Random;
 import java.util.Arrays;
 
-public class Main {
+public class lab1dotproduct {
     public static void main(String[] args) {
         int n = 5;
 
