@@ -1,0 +1,118 @@
+import java.util.Random;
+
+// Step 1: Create the abstract parent class
+abstract class Animal {
+    public abstract String toString();
+}
+
+// Step 2: Create the concrete animal classes
+class Bear extends Animal {
+    @Override
+    public String toString() {
+        return "B";
+    }
+}
+
+class Fish extends Animal {
+    @Override
+    public String toString() {
+        return "F";
+    }
+}
+
+// Main class to run the simulation
+public class Ecosystem {
+    private Animal[] river;
+    private Random random;
+
+    public Ecosystem(int riverSize) {
+        this.river = new Animal[riverSize];
+        this.random = new Random();
+        for (int i = 0; i < river.length; i++) {
+            int type = random.nextInt(3);
+            if (type == 0) {
+                river[i] = new Bear();
+            } else if (type == 1) {
+                river[i] = new Fish();
+            }
+        }
+    }
+
+    public void runStep() {
+        Animal[] newRiver = new Animal[river.length];
+        Animal[] babies = new Animal[river.length];
+        int babyCount = 0;
+
+        for (int i = 0; i < river.length; i++) {
+            if (river[i] == null) {
+                continue;
+            }
+
+            int target = i + random.nextInt(3) - 1;
+            if (target < 0 || target >= river.length) {
+                target = i;
+            }
+
+            if (newRiver[target] == null) {
+                newRiver[target] = river[i];
+            } else if (river[i] instanceof Bear && newRiver[target] instanceof Bear) {
+                babies[babyCount] = new Bear();
+                babyCount++;
+            } else if (river[i] instanceof Fish && newRiver[target] instanceof Fish) {
+                babies[babyCount] = new Fish();
+                babyCount++;
+            } else if (river[i] instanceof Bear) {
+                newRiver[target] = river[i];
+            }
+        }
+
+        river = newRiver;
+
+        for (int i = 0; i < babyCount; i++) {
+            placeBaby(babies[i]);
+        }
+    }
+
+    private void placeBaby(Animal baby) {
+        int emptyCount = 0;
+        for (int i = 0; i < river.length; i++) {
+            if (river[i] == null) {
+                emptyCount++;
+            }
+        }
+
+        if (emptyCount == 0) {
+            return;
+        }
+
+        int pick = random.nextInt(emptyCount);
+        int seen = 0;
+        for (int i = 0; i < river.length; i++) {
+            if (river[i] == null) {
+                if (seen == pick) {
+                    river[i] = baby;
+                    return;
+                }
+                seen++;
+            }
+        }
+    }
+
+    public void visualize() {
+        for (Animal animal : river) {
+            System.out.print(animal == null ? "-" : animal.toString());
+            System.out.print(" ");
+        }
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+        Ecosystem eco = new Ecosystem(20);
+        eco.visualize();
+
+        for (int step = 0; step < 10; step++) {
+            eco.runStep();
+            eco.visualize();
+        }
+    }
+}
