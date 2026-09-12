@@ -1,0 +1,230 @@
+import java.util.Scanner;
+
+// Step 1: Define the interface
+interface Polygon {
+    double area();
+    double perimeter();
+}
+
+// Step 2: Implement a base class for a specific shape
+class Quadrilateral implements Polygon {
+    protected double side1;
+    protected double side2;
+    protected double side3;
+    protected double side4;
+
+    public Quadrilateral(double side1, double side2, double side3, double side4) {
+        this.side1 = side1;
+        this.side2 = side2;
+        this.side3 = side3;
+        this.side4 = side4;
+    }
+
+    @Override
+    public double area() {
+        return 0;
+    }
+
+    @Override
+    public double perimeter() {
+        return side1 + side2 + side3 + side4;
+    }
+}
+
+// Step 3: Create a subclass using inheritance
+class Rectangle extends Quadrilateral {
+    protected double length;
+    protected double width;
+
+    public Rectangle(double length, double width) {
+        super(length, width, length, width);
+        this.length = length;
+        this.width = width;
+    }
+
+    @Override
+    public double area() {
+        return length * width;
+    }
+
+    @Override
+    public double perimeter() {
+        return 2 * (length + width);
+    }
+}
+
+// Step 4: Create a more specific subclass
+class Square extends Rectangle {
+    public Square(double side) {
+        super(side, side);
+    }
+}
+
+class Triangle implements Polygon {
+    protected double sideA;
+    protected double sideB;
+    protected double sideC;
+
+    public Triangle(double sideA, double sideB, double sideC) {
+        this.sideA = sideA;
+        this.sideB = sideB;
+        this.sideC = sideC;
+    }
+
+    @Override
+    public double area() {
+        double s = perimeter() / 2;
+        return Math.sqrt(s * (s - sideA) * (s - sideB) * (s - sideC));
+    }
+
+    @Override
+    public double perimeter() {
+        return sideA + sideB + sideC;
+    }
+}
+
+class IsoscelesTriangle extends Triangle {
+    public IsoscelesTriangle(double leg, double base) {
+        super(leg, leg, base);
+    }
+}
+
+class EquilateralTriangle extends IsoscelesTriangle {
+    public EquilateralTriangle(double side) {
+        super(side, side);
+    }
+}
+
+class Pentagon implements Polygon {
+    protected double side;
+
+    public Pentagon(double side) {
+        this.side = side;
+    }
+
+    @Override
+    public double area() {
+        return (5 * side * side) / (4 * Math.tan(Math.PI / 5));
+    }
+
+    @Override
+    public double perimeter() {
+        return 5 * side;
+    }
+}
+
+class Hexagon implements Polygon {
+    protected double side;
+
+    public Hexagon(double side) {
+        this.side = side;
+    }
+
+    @Override
+    public double area() {
+        return (6 * side * side) / (4 * Math.tan(Math.PI / 6));
+    }
+
+    @Override
+    public double perimeter() {
+        return 6 * side;
+    }
+}
+
+class Octagon implements Polygon {
+    protected double side;
+
+    public Octagon(double side) {
+        this.side = side;
+    }
+
+    @Override
+    public double area() {
+        return (8 * side * side) / (4 * Math.tan(Math.PI / 8));
+    }
+
+    @Override
+    public double perimeter() {
+        return 8 * side;
+    }
+}
+
+// Main class for user interface
+public class PolygonCalculator {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        boolean running = true;
+
+        while (running) {
+            System.out.println("Create a polygon:");
+            System.out.println("1. Triangle");
+            System.out.println("2. Isosceles Triangle");
+            System.out.println("3. Equilateral Triangle");
+            System.out.println("4. Rectangle");
+            System.out.println("5. Square");
+            System.out.println("6. Pentagon");
+            System.out.println("7. Hexagon");
+            System.out.println("8. Octagon");
+            System.out.println("9. Quit");
+            System.out.print("Enter your choice: ");
+
+            int choice = scanner.nextInt();
+            Polygon shape = null;
+
+            if (choice == 1) {
+                System.out.print("Enter side A: ");
+                double sideA = scanner.nextDouble();
+                System.out.print("Enter side B: ");
+                double sideB = scanner.nextDouble();
+                System.out.print("Enter side C: ");
+                double sideC = scanner.nextDouble();
+                shape = new Triangle(sideA, sideB, sideC);
+            } else if (choice == 2) {
+                System.out.print("Enter leg length: ");
+                double leg = scanner.nextDouble();
+                System.out.print("Enter base length: ");
+                double base = scanner.nextDouble();
+                shape = new IsoscelesTriangle(leg, base);
+            } else if (choice == 3) {
+                System.out.print("Enter side length: ");
+                double side = scanner.nextDouble();
+                shape = new EquilateralTriangle(side);
+            } else if (choice == 4) {
+                System.out.print("Enter length: ");
+                double length = scanner.nextDouble();
+                System.out.print("Enter width: ");
+                double width = scanner.nextDouble();
+                shape = new Rectangle(length, width);
+            } else if (choice == 5) {
+                System.out.print("Enter side length: ");
+                double side = scanner.nextDouble();
+                shape = new Square(side);
+            } else if (choice == 6) {
+                System.out.print("Enter side length: ");
+                double side = scanner.nextDouble();
+                shape = new Pentagon(side);
+            } else if (choice == 7) {
+                System.out.print("Enter side length: ");
+                double side = scanner.nextDouble();
+                shape = new Hexagon(side);
+            } else if (choice == 8) {
+                System.out.print("Enter side length: ");
+                double side = scanner.nextDouble();
+                shape = new Octagon(side);
+            } else if (choice == 9) {
+                running = false;
+            } else {
+                System.out.println("That is not a valid choice.");
+            }
+
+            if (shape != null) {
+                System.out.printf("Area: %.2f%n", shape.area());
+                System.out.printf("Perimeter: %.2f%n", shape.perimeter());
+            }
+
+            System.out.println();
+        }
+
+        scanner.close();
+    }
+}
