@@ -1,0 +1,119 @@
+// You will need a functioning Queue implementation (like LinkedQueue) for this to work.
+interface Queue<T> {
+    void enqueue(T item);
+    T dequeue();
+    boolean isEmpty();
+}
+
+class LinkedQueue<T> implements Queue<T> {
+    private class Node {
+        T data;
+        Node next;
+
+        Node(T data) {
+            this.data = data;
+        }
+    }
+
+    private Node front;
+    private Node rear;
+
+    public void enqueue(T item) {
+        Node newNode = new Node(item);
+        if (isEmpty()) {
+            front = newNode;
+        } else {
+            rear.next = newNode;
+        }
+        rear = newNode;
+    }
+
+    public T dequeue() {
+        T item = front.data;
+        front = front.next;
+        if (front == null) {
+            rear = null;
+        }
+        return item;
+    }
+
+    public boolean isEmpty() {
+        return front == null;
+    }
+}
+
+/**
+ * Represents a single document to be printed.
+ */
+class PrintJob {
+    private String documentName;
+    private int pageCount;
+
+    // my constructor here
+    public PrintJob(String documentName, int pageCount) {
+        this.documentName = documentName;
+        this.pageCount = pageCount;
+    }
+
+    // my toString here
+    // e.g., "PrintJob[Document: report.docx, Pages: 15]"
+    @Override
+    public String toString() {
+        return "PrintJob[Document: " + documentName + ", Pages: " + pageCount + "]";
+    }
+}
+
+/**
+ * Simulates a printer that manages a queue of print jobs.
+ */
+public class Printer {
+    private Queue jobQueue;
+
+    public Printer() {
+        // initialize the jobQueue with a LinkedQueue
+        jobQueue = new LinkedQueue<>();
+    }
+
+    /**
+     * Adds a new print job to the rear of the queue.
+     * @param job The print job to add.
+     */
+    public void addJob(PrintJob job) {
+        System.out.println("Adding to queue: " + job);
+        // enqueue the job
+        jobQueue.enqueue(job);
+    }
+
+    /**
+     * Processes the job at the front of the queue.
+     */
+    public void processNextJob() {
+        // check if the queue is empty first
+        if (jobQueue.isEmpty()) {
+            System.out.println("The print queue is empty.");
+        } else {
+            // dequeue the job and "print" it
+            PrintJob job = (PrintJob) jobQueue.dequeue();
+            System.out.println("Processing: " + job);
+        }
+    }
+
+    public static void main(String[] args) {
+        Printer officePrinter = new Printer();
+
+        officePrinter.addJob(new PrintJob("Annual_Report.pdf", 25));
+        officePrinter.addJob(new PrintJob("Meeting_Agenda.docx", 2));
+        officePrinter.addJob(new PrintJob("Presentation_Slides.pptx", 30));
+
+        System.out.println("\n--- Starting to Print ---");
+        officePrinter.processNextJob(); // Should print Annual_Report.pdf
+        officePrinter.processNextJob(); // Should print Meeting_Agenda.docx
+
+        System.out.println("\nNew high-priority job arrives...");
+        officePrinter.addJob(new PrintJob("Urgent_Memo.pdf", 1));
+
+        officePrinter.processNextJob(); // Should print Presentation_Slides.pptx
+        officePrinter.processNextJob(); // Should print Urgent_Memo.pdf
+        officePrinter.processNextJob(); // Should say the queue is empty
+    }
+}
